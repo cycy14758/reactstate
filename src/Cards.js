@@ -1,0 +1,26 @@
+import React from 'react'
+import Card from 'react-bootstrap/Card';
+
+import { Rating } from 'react-simple-star-rating';
+
+
+function Cards({el}) {
+  return (
+    <div>
+    <Card  className='card' style={{ width: '18rem' }}>
+      <Card.Img  variant="top" src={el.posterUrl} style={{ height: '200px' }} />
+      <Card.Body  className='card-body'>
+        <Card.Title className="card-title ">{el.title}</Card.Title>
+        <Card.Text className='card-text '>
+       {el.description}
+        </Card.Text>
+      </Card.Body>
+     
+      <Rating iconsCount={5} readonly={true} initialValue={el.rating}/>
+    </Card>
+  
+    </div>
+  )
+}
+
+export default Cards

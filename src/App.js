@@ -1,51 +1,60 @@
-import React, { Component } from 'react';
-import FullName from './FullName';
-import Img from './fileimg';
-import Bio from './filebio';
-import Profession from './fileprofession';
-import './index.css';
+import React, { useState } from 'react';
+import Nav1 from './Navbar';
+import 'bootstrap/dist/css/bootstrap.min.css';
+import { Rating } from 'react-simple-star-rating';
+import CardList from './CardList';
+import './App.css';
+import arr from './Data';
+import { useEffect } from 'react';
+
+function App() {
+  const [data, setData] = useState(arr);
+  const [rating, setRating] = useState(0);
+  const [searchTitle, setSearchTitle] = useState('');
+
+useEffect(() => {
+  setData(arr)
+
+}, [])
 
 
-class App extends Component {
-  state = {
-    person: {
-    fullName: 'cyrine',
-    bio: 'A passionate developer',
-      imgSrc: 'https://upload.wikimedia.org/wikipedia/commons/b/b2/Bootstrap_logo.svg',
-      profession: 'Web Developer',
-      },
-     timeInterval:0,
-     show: false,}
-     
-    componentDidMount() {
-      this.interval = setInterval(() => {
-        this.setState(prevState => ({
-          timeInterval: prevState.timeInterval + 1,
-        }));
-      }, 1000);}
-      componentWillUnmount() {
-        clearInterval(this.interval);
-      }
+  const handleRating = (rate) => {
+    setRating(rate);
+  };
 
-    
-  render() {
-    return ( 
-     <div>
+  const handleSearch = () => {
+    const filteredResults = data.filter((movie) => {
+      const titleMatch = movie.title.toLowerCase().includes(searchTitle.toLowerCase());
+      const ratingMatch = movie.rating >= rating;
+      return titleMatch && ratingMatch;
+    });
+    return filteredResults;
+  };
 
-{ this.state.show?<div>
-    <FullName  className="fullName" props={this.state.person.fullName}  x={this.state.timeInterval} />
-   <Img className="img" props={this.state.person.imgSrc} />
-   
-   <Bio className='img'props={this.state.person.bio} />
-   <Profession  props={this.state.person.profession}/>
-   </div>:null}
-   <h2>counterApp:{this.state.timeInterval}</h2>
-   <button onClick={()=>this.setState({show:!this.state.show})}>click</button>
+  function onAdd(title, description, rating) {
+    setData([...data, { title: title, description: description, rating: rating }]);
+  }
 
+  const filteredData = handleSearch();
 
-     </div>)
-
-}
+  return (
+    <div className="App">
+      <Nav1 onAdd={onAdd} />
+      <div className="prt">
+        <div className="search-container">
+          <input
+            type="text"
+            placeholder="Search by title"
+            value={searchTitle}
+            onChange={(e) => setSearchTitle(e.target.value)}
+          />
+          <Rating onClick={handleRating} ratingValue={rating} />
+          <button onClick={handleSearch}>Search</button>
+        </div>
+        <CardList info={filteredData} />
+      </div>
+    </div>
+  );
 }
 
 export default App;
